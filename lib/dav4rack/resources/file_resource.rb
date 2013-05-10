@@ -45,7 +45,7 @@ module DAV4Rack
 
     # Return an Etag, an unique hash value for this resource.
     def etag
-      sprintf('%x-%x-%x', stat.ino, stat.size, stat.mtime.to_i)
+      sprintf('"%x-%x-%x"', stat.ino, stat.size, stat.mtime.to_i)
     end
 
     # Return the mime type of this resource.
