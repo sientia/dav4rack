@@ -29,7 +29,7 @@ module DAV4Rack
     def not_found
       body = "File not found: #{Rack::Utils.unescape(env["PATH_INFO"])}\n"
       [404, {"Content-Type" => "text/plain",
-         "Content-Length" => body.size.to_s,
+         "Content-Length" => body.bytesize.to_s,
          "X-Cascade" => "pass"},
        [body]]
     end

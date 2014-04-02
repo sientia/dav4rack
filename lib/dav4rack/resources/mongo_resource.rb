@@ -82,7 +82,7 @@ module DAV4Rack
     def content_type
 #     if stat.directory?
 #       "text/html"
-#     else 
+#     else
 #       mime_type(file_path, DefaultMimeTypes)
 #     end
       @bson['contentType'] || "text/html"
@@ -99,16 +99,7 @@ module DAV4Rack
     # Write the content of the resource to the response.body.
     def get(request, response)
       raise NotFound unless exist?
-#     if stat.directory?
-#       response.body = ""
-#       Rack::Directory.new(root).call(request.env)[2].each do |line|
-#         response.body << line
-#       end
-#       response['Content-Length'] = response.body.size.to_s
-#     else
-#       file = Rack::File.new(root)
-#       response.body = file
-#     end
+
       if collection?
         response.body = "<html>"
         response.body << "<h2>" + file_path.html_safe + "</h2>"
@@ -119,7 +110,7 @@ module DAV4Rack
           response.body << "</br>"
         end
         response.body << "</html>"
-        response['Content-Length'] = response.body.size.to_s
+        response['Content-Length'] = response.body.bytesize.to_s
         response['Content-Type'] = 'text/html'
       else
         @filesystem.open(file_path, 'r') do |f|
@@ -127,7 +118,6 @@ module DAV4Rack
           response['Content-Type'] = @bson['contentType']
         end
       end
-
     end
 
     # HTTP PUT request.
@@ -240,7 +230,7 @@ module DAV4Rack
         # http://mongoid.org/docs/persistence/atomic.html
         # http://rubydoc.info/github/mongoid/mongoid/master/Mongoid/Collection#update-instance_method
         @collection.update({'_id' => bson['_id']}, {'$set' => {'filename' => dst_name}}, :safe => true)
-        
+
         @collection.remove(exists) if exists
       end
 
@@ -264,7 +254,7 @@ module DAV4Rack
 
       # 0バイトのファイルを作成しディレクトリの代わりとする
       @filesystem.open(file_path, "w") { |f| } if !bson
- 
+
 #      @@logger.error('make_collection : ' + file_path)
 
       Created
